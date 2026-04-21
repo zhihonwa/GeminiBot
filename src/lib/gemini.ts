@@ -4,6 +4,7 @@ import { Message } from "../types";
 export type GeminiConfig = {
   model: string;
   apiKey?: string;
+  baseUrl?: string;
   temperature?: number;
   topP?: number;
   topK?: number;
@@ -11,13 +12,17 @@ export type GeminiConfig = {
   systemInstruction?: string;
 };
 
-function getAiClient(apiKey?: string) {
+function getAiClient(apiKey?: string, baseUrl?: string) {
   const finalKey = apiKey || process.env.GEMINI_API_KEY || "";
-  return new GoogleGenAI({ apiKey: finalKey });
+  const opts: any = { apiKey: finalKey };
+  if (baseUrl) {
+    opts.baseUrl = baseUrl;
+  }
+  return new GoogleGenAI(opts);
 }
 
 export async function* sendMessageStream(messages: Message[], config: GeminiConfig) {
-  const ai = getAiClient(config.apiKey);
+  const ai = getAiClient(config.apiKey, config.baseUrl);
   
   const history = messages.slice(0, -1).map(m => ({
     role: m.role as "user" | "model",

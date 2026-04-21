@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { X, Save, Sun, Moon, Type as TypeIcon, Sliders, Globe } from 'lucide-react';
-import { AppSettings } from '../types';
+import { X, Save, Sun, Moon, Type as TypeIcon, Sliders, Globe, Database, Plus, Trash2 } from 'lucide-react';
+import { AppSettings, CustomModel } from '../types';
 import { motion } from 'motion/react';
 import { MODELS } from '../constants';
 
@@ -12,7 +12,28 @@ interface SettingsModalProps {
 
 export default function SettingsModal({ settings, onSave, onClose }: SettingsModalProps) {
   const [localSettings, setLocalSettings] = useState<AppSettings>({ ...settings });
-  const [activeTab, setActiveTab] = useState<'general' | 'model' | 'appearance'>('general');
+  const [activeTab, setActiveTab] = useState<'general' | 'model_params' | 'models_management' | 'appearance'>('general');
+
+  const [newModel, setNewModel] = useState<Partial<CustomModel>>({ id: '', name: '', baseUrl: '' });
+
+  const handleAddModel = () => {
+    if (newModel.id && newModel.name) {
+      setLocalSettings(prev => ({
+        ...prev,
+        customModels: [...(prev.customModels || []), newModel as CustomModel]
+      }));
+      setNewModel({ id: '', name: '', baseUrl: '' });
+    }
+  };
+
+  const handleDeleteModel = (id: string) => {
+    setLocalSettings(prev => ({
+      ...prev,
+      customModels: (prev.customModels || []).filter(m => m.id !== id),
+      // Automatically switch default if the deleted model is the current one
+      model: prev.model === id ? (prev.customModels?.[0]?.id || '') : prev.model
+    }));
+  };
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
@@ -40,11 +61,18 @@ export default function SettingsModal({ settings, onSave, onClose }: SettingsMod
               <span className="text-[10px] font-bold">常规</span>
             </button>
             <button 
-              onClick={() => setActiveTab('model')}
-              className={`w-full flex flex-col items-center gap-1 p-3 rounded-xl transition-all ${activeTab === 'model' ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-600' : 'text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800'}`}
+              onClick={() => setActiveTab('model_params')}
+              className={`w-full flex flex-col items-center gap-1 p-3 rounded-xl transition-all ${activeTab === 'model_params' ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-600' : 'text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800'}`}
             >
               <TypeIcon size={20} />
               <span className="text-[10px] font-bold">模型参数</span>
+            </button>
+            <button 
+              onClick={() => setActiveTab('models_management')}
+              className={`w-full flex flex-col items-center gap-1 p-3 rounded-xl transition-all ${activeTab === 'models_management' ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-600' : 'text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800'}`}
+            >
+              <Database size={20} />
+              <span className="text-[10px] font-bold">大模型管理</span>
             </button>
             <button 
               onClick={() => setActiveTab('appearance')}
@@ -65,7 +93,7 @@ export default function SettingsModal({ settings, onSave, onClose }: SettingsMod
                     onChange={(e) => setLocalSettings(prev => ({ ...prev, model: e.target.value }))}
                     className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-xl px-4 py-3 text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-blue-500/20 outline-none transition-all cursor-pointer appearance-none"
                   >
-                    {MODELS.map(m => (
+                    {localSettings.customModels?.map((m: CustomModel) => (
                       <option key={m.id} value={m.id} className="bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100">
                         {m.name}
                       </option>
@@ -104,7 +132,7 @@ export default function SettingsModal({ settings, onSave, onClose }: SettingsMod
               </div>
             )}
 
-            {activeTab === 'model' && (
+            {activeTab === 'model_params' && (
               <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-200">
                 <div className="space-y-4">
                   <div className="flex justify-between">
@@ -142,6 +170,70 @@ export default function SettingsModal({ settings, onSave, onClose }: SettingsMod
                     className="w-full h-2 bg-slate-100 dark:bg-slate-800 rounded-lg appearance-none cursor-pointer accent-blue-600"
                   />
                 </div>
+              </div>
+            )}
+
+            {activeTab === 'models_management' && (
+              <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-200">
+                
+                <div className="space-y-3">
+                  <label className="text-sm font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider">新增大模型</label>
+                  <div className="space-y-2 p-4 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-slate-100 dark:border-slate-800">
+                    <input 
+                      type="text"
+                      value={newModel.name}
+                      onChange={(e) => setNewModel({ ...newModel, name: e.target.value })}
+                      placeholder="模型显示名称 (例如: GPT-4)"
+                      className="w-full bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-blue-500/20 outline-none transition-all"
+                    />
+                    <input 
+                      type="text"
+                      value={newModel.id}
+                      onChange={(e) => setNewModel({ ...newModel, id: e.target.value })}
+                      placeholder="模型调用 ID (例如: gpt-4)"
+                      className="w-full bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-blue-500/20 outline-none transition-all"
+                    />
+                    <input 
+                      type="text"
+                      value={newModel.baseUrl}
+                      onChange={(e) => setNewModel({ ...newModel, baseUrl: e.target.value })}
+                      placeholder="Base URL (可选, 例如: https://api.openai.com/v1)"
+                      className="w-full bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-blue-500/20 outline-none transition-all"
+                    />
+                    <button
+                      onClick={handleAddModel}
+                      disabled={!newModel.name || !newModel.id}
+                      className="w-full mt-2 flex items-center justify-center gap-2 py-2 rounded-lg bg-blue-600 text-white font-medium hover:bg-blue-700 disabled:opacity-50 transition-colors"
+                    >
+                      <Plus size={16} /> 添加模型
+                    </button>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-sm font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider">已配置模型</label>
+                  <div className="space-y-2">
+                    {localSettings.customModels?.map((m: CustomModel) => (
+                      <div key={m.id} className="flex flex-col gap-1 p-3 bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-xl overflow-hidden relative group">
+                        <div className="flex items-center justify-between">
+                          <span className="font-bold text-sm text-slate-800 dark:text-slate-200 truncate pr-8">{m.name}</span>
+                          <button
+                            onClick={() => handleDeleteModel(m.id)}
+                            className="absolute right-3 top-3 text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/30 p-1.5 rounded-lg transition-all"
+                            title="删除模型"
+                          >
+                            <Trash2 size={16} />
+                          </button>
+                        </div>
+                        <span className="text-[10px] text-slate-500 dark:text-slate-400 font-mono truncate">{m.id}</span>
+                        {m.baseUrl && (
+                          <span className="text-[10px] text-slate-400 bg-slate-50 dark:bg-slate-900/50 p-1 rounded font-mono truncate">{m.baseUrl}</span>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
               </div>
             )}
 

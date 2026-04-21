@@ -12,6 +12,12 @@ export type ChatSession = {
   updatedAt: number;
 };
 
+export type CustomModel = {
+  id: string;
+  name: string;
+  baseUrl?: string;
+};
+
 export type AppSettings = {
   model: string;
   apiKey: string;
@@ -21,4 +27,5 @@ export type AppSettings = {
   theme: 'light' | 'dark';
   fontSize: 'sm' | 'md' | 'lg';
   webSearch: boolean;
+  customModels: CustomModel[];
 };

@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, User, Loader2, StopCircle, Mic, MicOff, PanelLeft, Paperclip, X } from 'lucide-react';
-import { Message } from '../types';
+import { Send, User, Loader2, StopCircle, Mic, MicOff, PanelLeft, Paperclip, X, Copy, Check } from 'lucide-react';
+import { Message, CustomModel } from '../types';
 import { motion, AnimatePresence } from 'motion/react';
 import { MODELS } from '../constants';
 
@@ -13,6 +13,7 @@ interface ChatFieldProps {
   onStop?: () => void;
   isSidebarOpen?: boolean;
   onToggleSidebar?: () => void;
+  availableModels: CustomModel[];
 }
 
 export default function ChatField({
@@ -23,11 +24,13 @@ export default function ChatField({
   isLoading,
   onStop,
   isSidebarOpen,
-  onToggleSidebar
+  onToggleSidebar,
+  availableModels
 }: ChatFieldProps) {
   const [input, setInput] = useState('');
   const [isRecording, setIsRecording] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [copiedId, setCopiedId] = useState<number | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const recognitionRef = useRef<any>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -105,6 +108,14 @@ export default function ChatField({
     }
   };
 
+  const handleCopy = (text: string, index: number) => {
+    navigator.clipboard.writeText(text);
+    setCopiedId(index);
+    setTimeout(() => {
+      setCopiedId(current => current === index ? null : current);
+    }, 2000);
+  };
+
   return (
     <div className="flex-1 flex flex-col h-full bg-slate-50 dark:bg-slate-900 relative overflow-hidden transition-colors duration-300">
       {/* Header */}
@@ -129,7 +140,7 @@ export default function ChatField({
               className="appearance-none bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-[10px] font-bold rounded-full px-3 py-1 uppercase border border-blue-100 dark:border-blue-900 outline-none cursor-pointer pr-6 hover:bg-blue-100 dark:hover:bg-blue-900/50 transition-colors"
               style={{ backgroundImage: 'url("data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%232563eb%22%20stroke-width%3D%223%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E")', backgroundRepeat: 'no-repeat', backgroundPosition: 'right 0.5rem center' }}
             >
-              {MODELS.map(m => (
+              {availableModels.map(m => (
                 <option key={m.id} value={m.id} className="bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100">
                   {m.name}
                 </option>
@@ -174,8 +185,16 @@ export default function ChatField({
                       : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 rounded-tl-none border-slate-100 dark:border-slate-700'
                   }`}>
                     <p className="leading-relaxed whitespace-pre-wrap">{message.content}</p>
-                    <div className={`mt-2 text-[10px] opacity-40 font-medium ${message.role === 'user' ? 'text-right' : 'text-left'}`}>
-                      {new Date(message.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                    <div className={`mt-2 flex items-center justify-between text-[10px] opacity-40 font-medium ${message.role === 'user' ? 'flex-row-reverse' : ''}`}>
+                      <span>{new Date(message.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                      <button 
+                        type="button"
+                        onClick={() => handleCopy(message.content, index)}
+                        className={`hover:opacity-100 flex items-center justify-center p-1 rounded hover:bg-black/10 dark:hover:bg-white/10 transition-colors ${message.role === 'user' ? 'mr-auto' : 'ml-auto'}`}
+                        title="复制内容"
+                      >
+                        {copiedId === index ? <Check size={12} /> : <Copy size={12} />}
+                      </button>
                     </div>
                   </div>
 

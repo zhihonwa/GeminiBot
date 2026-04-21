@@ -1,4 +1,5 @@
 import { ChatSession, AppSettings } from "../types";
+import { MODELS } from "../constants";
 
 const STORAGE_KEY = 'gemini_bot_sessions';
 const SETTINGS_KEY = 'gemini_bot_settings';
@@ -6,7 +7,13 @@ const SETTINGS_KEY = 'gemini_bot_settings';
 export const storage = {
   getSettings: (): AppSettings => {
     const data = localStorage.getItem(SETTINGS_KEY);
-    return data ? JSON.parse(data) : { 
+    let parsed = data ? JSON.parse(data) : null;
+    
+    if (parsed && !parsed.customModels) {
+      parsed.customModels = MODELS;
+    }
+    
+    return parsed || { 
       model: 'gemini-1.5-pro', 
       apiKey: '',
       temperature: 0.7,
@@ -14,7 +21,8 @@ export const storage = {
       topK: 40,
       theme: 'light',
       fontSize: 'md',
-      webSearch: true
+      webSearch: true,
+      customModels: MODELS
     };
   },
   

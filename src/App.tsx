@@ -110,9 +110,12 @@ ${beijingTime}
 
       const messagesForApi = sessionToUpdate ? sessionToUpdate.messages : [newMessage];
       
+      const selectedModelInfo = settings.customModels?.find(m => m.id === settings.model);
+
       const stream = sendMessageStream(messagesForApi, { 
         model: settings.model, 
         apiKey: settings.apiKey,
+        baseUrl: selectedModelInfo?.baseUrl,
         temperature: settings.temperature,
         topP: settings.topP,
         topK: settings.topK,
@@ -266,6 +269,7 @@ ${beijingTime}
           <ChatField 
             messages={currentSession?.messages || []}
             selectedModel={settings.model}
+            availableModels={settings.customModels || []}
             onModelChange={handleModelChange}
             onSendMessage={handleSendMessage}
             isLoading={isLoading}
