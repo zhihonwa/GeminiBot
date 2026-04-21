@@ -17,7 +17,7 @@
   },
   "build": {
     "appId": "com.geminibot.app",
-    "productName": "reGeminiBot",
+    "productName": "GeminiBot",
     "directories": {
       "output": "dist-electron"
     },
