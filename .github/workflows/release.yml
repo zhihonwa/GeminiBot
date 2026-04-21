@@ -44,14 +44,17 @@ jobs:
         run: npm install
 
       - name: Build and Pack Windows
-        run: npm run build:windows
+        run: |
+          npm run build:windows
+          # 重命名为统一格式 GeminiBot-v1.0.x-win.exe
+          Move-Item -Path "dist-electron\*.exe" -Destination "GeminiBot-${{ github.ref_name }}-win.exe"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload Windows Asset
         uses: softprops/action-gh-release@v2
         with:
-          files: dist-electron/*.exe
+          files: GeminiBot-${{ github.ref_name }}-win.exe
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -82,7 +85,6 @@ jobs:
 
       - name: Build Android APK
         run: |
-          # 如果 android 目录不存在，则初始化它
           if [ ! -d "android" ]; then
             npx cap add android
           fi
@@ -90,12 +92,12 @@ jobs:
           cd android
           chmod +x gradlew
           ./gradlew assembleDebug
-          # 重命名文件以便于识别
+          # 重命名为统一格式 GeminiBot-v1.0.x-Android.apk
           cp app/build/outputs/apk/debug/app-debug.apk ../GeminiBot-${{ github.ref_name }}-Android.apk
 
       - name: Upload Android Asset
         uses: softprops/action-gh-release@v2
         with:
-          files: reGeminiBot-v${{ github.ref_name }}-Android.apk
+          files: GeminiBot-${{ github.ref_name }}-Android.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
