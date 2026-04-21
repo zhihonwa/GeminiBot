@@ -1,0 +1,8 @@
+{
+  "name": "GeminiBot",
+  "description": "专业且详尽的 AI 智能助手，支持联网搜索与语音输入。",
+  "requestFramePermissions": [
+    "microphone"
+  ],
+  "majorCapabilities": []
+}

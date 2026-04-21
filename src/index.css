@@ -1,0 +1,12 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: 'PingFang SC', 'Microsoft YaHei', 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --color-brand: #2563eb; /* blue-600 */
+}
+
+@layer base {
+  body {
+    @apply font-sans bg-[#F8FAFC] text-slate-800;
+  }
+}
