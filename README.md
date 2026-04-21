@@ -2,6 +2,14 @@
 
 reGeminiBot 是一款基于 Google Gemini 系列模型构建的现代化、全能型 AI 对话助手。它不仅提供了极致的网页端体验，还通过 Capacitor 和 Electron 实现了 **Android (APK)** 与 **Windows (EXE)** 的跨平台支持。
 
+## 📥 下载与安装
+
+您可以前往 [Releases 页面](https://github.com/YOUR_USERNAME/YOUR_REPO_NAME/releases) 下载最新版本的安装包：
+
+- **Windows 用户**: 下载 `.exe` 便携版，直接运行即可。
+- **Android 用户**: 下载 `.apk` 文件并在手机上安装。
+- **Web/浏览器**: 访问 [在线地址](https://YOUR_APP_URL) 并通过浏览器菜单“安装应用”使用 PWA 版。
+
 ---
 
 ## ✨ 核心特性
@@ -83,6 +91,23 @@ npm run build:android
 
 - **API Key**: 应用默认使用环境变量中的 Gemini Key。您也可以在应用内的“设置”面板中输入自己的 API Key。
 - **深色模式**: 在设置中切换后，应用会自动调整 `color-scheme`，确保滚动条等系统元素也同步变色。
+
+---
+
+## 🤖 自动化发布 (GitHub Actions)
+
+我已经为您配置好了 GitHub Actions。现在您不需要在本地编译，只需通过推送到标签即可触发云端自动构建：
+
+1.  **提交代码**: 确保本地代码已全部提交并推送到 GitHub。
+2.  **创建标签并推送**:
+    ```bash
+    git tag v1.0.0
+    git push origin v1.0.0
+    ```
+3.  **查看结果**: 前往 GitHub 仓库的 **Actions** 选项卡。您会看到两个正在运行的任务：
+    - `build-windows`: 会在 Windows 虚拟机中编译 `.exe`。
+    - `build-android`: 会在 Ubuntu 虚拟机中配置 Java 环境并编译 `.apk`。
+4.  **自动发布**: 任务完成后，GitHub 会自动创建一个名为 `v1.0.0` 的 Release，并将生成的安装包附件关联上去。
 
 ---
 
