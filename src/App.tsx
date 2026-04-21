@@ -201,6 +201,20 @@ ${beijingTime}
     }
   };
 
+  const handleRenameSession = (id: string, newTitle: string) => {
+    const sessionToUpdate = sessions.find(s => s.id === id);
+    if (sessionToUpdate) {
+      const updatedSessions = sessions.map(s => {
+        if (s.id === id) {
+          return { ...s, title: newTitle, updatedAt: Date.now() };
+        }
+        return s;
+      });
+      setSessions(updatedSessions);
+      storage.updateSession(id, { title: newTitle });
+    }
+  };
+
   const handleSaveSettings = (newSettings: AppSettings) => {
     setSettings(newSettings);
     storage.saveSettings(newSettings);
@@ -209,11 +223,14 @@ ${beijingTime}
   // Add this useEffect to handle theme and global styles
   useEffect(() => {
     const root = window.document.documentElement;
+    const body = window.document.body;
     if (settings.theme === 'dark') {
       root.classList.add('dark');
+      body.classList.add('dark');
       root.style.colorScheme = 'dark';
     } else {
       root.classList.remove('dark');
+      body.classList.remove('dark');
       root.style.colorScheme = 'light';
     }
   }, [settings.theme]);
@@ -240,16 +257,19 @@ ${beijingTime}
         onSelectSession={handleSelectSession}
         onNewSession={createNewSession}
         onDeleteSession={handleDeleteSession}
+        onRenameSession={handleRenameSession}
         onOpenSettings={() => setIsSettingsOpen(true)}
       />
       
-      <main className={`flex-1 overflow-hidden transition-all duration-300 ${isSidebarOpen ? '' : 'md:pl-0'}`}>
+      <main className="flex-1 overflow-hidden transition-all duration-300">
         <ChatField 
           messages={currentSession?.messages || []}
           selectedModel={settings.model}
           onModelChange={handleModelChange}
           onSendMessage={handleSendMessage}
           isLoading={isLoading}
+          isSidebarOpen={isSidebarOpen}
+          onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
         />
       </main>
 

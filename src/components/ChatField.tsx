@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, User, Loader2, StopCircle, Mic, MicOff } from 'lucide-react';
+import { Send, User, Loader2, StopCircle, Mic, MicOff, PanelLeft, Paperclip } from 'lucide-react';
 import { Message } from '../types';
 import { motion, AnimatePresence } from 'motion/react';
 import { MODELS } from '../constants';
@@ -11,6 +11,8 @@ interface ChatFieldProps {
   onSendMessage: (content: string) => void;
   isLoading: boolean;
   onStop?: () => void;
+  isSidebarOpen?: boolean;
+  onToggleSidebar?: () => void;
 }
 
 export default function ChatField({
@@ -19,7 +21,9 @@ export default function ChatField({
   onModelChange,
   onSendMessage,
   isLoading,
-  onStop
+  onStop,
+  isSidebarOpen,
+  onToggleSidebar
 }: ChatFieldProps) {
   const [input, setInput] = useState('');
   const [isRecording, setIsRecording] = useState(false);
@@ -62,7 +66,14 @@ export default function ChatField({
 
   const toggleRecording = () => {
     if (isRecording) {
-      recognitionRef.current?.stop();
+      if (recognitionRef.current) {
+        try {
+          recognitionRef.current.stop();
+        } catch (e) {
+          console.error(e);
+        }
+      }
+      setIsRecording(false);
     } else {
       if (recognitionRef.current) {
         setIsRecording(true);
@@ -84,12 +95,21 @@ export default function ChatField({
   return (
     <div className="flex-1 flex flex-col h-full bg-slate-50 dark:bg-slate-900 relative overflow-hidden transition-colors duration-300">
       {/* Header */}
-      <header className="h-16 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between px-8 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md sticky top-0 z-10 transition-all">
-        <div className="flex items-center gap-4">
-          <h2 className="font-bold text-slate-800 dark:text-slate-100 truncate max-w-[150px] md:max-w-md">
+      <header className="h-16 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between px-4 md:px-8 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md sticky top-0 z-10 transition-all">
+        <div className="flex items-center gap-2 md:gap-4 overflow-hidden">
+          {!isSidebarOpen && onToggleSidebar && (
+            <button 
+              onClick={onToggleSidebar}
+              className="p-2 -ml-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors"
+            >
+              <PanelLeft size={20} />
+            </button>
+          )}
+          <h2 className="font-bold text-slate-800 dark:text-slate-100 truncate max-w-[200px] md:max-w-md">
             {messages.length > 0 ? "当前对话" : "新对话"}
           </h2>
-          <div className="relative group">
+        </div>
+        <div className="relative group shrink-0">
             <select 
               value={selectedModel}
               onChange={(e) => onModelChange(e.target.value)}
@@ -103,7 +123,6 @@ export default function ChatField({
               ))}
             </select>
           </div>
-        </div>
       </header>
 
       <div className="flex-1 overflow-y-auto px-4 py-8 md:px-8">
@@ -168,12 +187,21 @@ export default function ChatField({
           <div className="relative flex items-center bg-slate-100 dark:bg-slate-800 rounded-2xl transition-all overflow-hidden p-1 shadow-sm border border-transparent focus-within:border-blue-500/30">
             <button
               type="button"
+              className="p-3 rounded-xl transition-all text-slate-400 hover:text-blue-500 hover:bg-slate-200 dark:hover:bg-slate-700 relative"
+              title="上传文件"
+            >
+              <Paperclip size={20} />
+              <input type="file" className="absolute inset-0 opacity-0 cursor-pointer" title="上传文件" />
+            </button>
+            <button
+              type="button"
               onClick={toggleRecording}
               className={`p-3 rounded-xl transition-all ${
                 isRecording 
                   ? 'bg-red-100 dark:bg-red-900/30 text-red-500 animate-pulse' 
-                  : 'text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'
+                  : 'text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700 hover:text-blue-500'
               }`}
+              title="语音输入"
             >
               {isRecording ? <MicOff size={20} /> : <Mic size={20} />}
             </button>

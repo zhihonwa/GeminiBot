@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Plus, MessageSquare, Trash2, Search, PanelLeftClose, PanelLeft, Settings } from 'lucide-react';
+import { Plus, MessageSquare, Trash2, Search, PanelLeftClose, PanelLeft, Settings, Edit2 } from 'lucide-react';
 import { ChatSession } from '../types';
 import { motion, AnimatePresence } from 'motion/react';
 
@@ -11,6 +11,7 @@ interface SidebarProps {
   onSelectSession: (id: string) => void;
   onNewSession: () => void;
   onDeleteSession: (id: string) => void;
+  onRenameSession: (id: string, newTitle: string) => void;
   onOpenSettings: () => void;
   className?: string;
 }
@@ -23,10 +24,20 @@ export default function Sidebar({
   onSelectSession,
   onNewSession,
   onDeleteSession,
+  onRenameSession,
   onOpenSettings,
   className = ""
 }: SidebarProps) {
   const [searchQuery, setSearchQuery] = useState('');
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editTitle, setEditTitle] = useState('');
+
+  const handleEditSubmit = (id: string) => {
+    if (editTitle.trim()) {
+      onRenameSession(id, editTitle.trim());
+    }
+    setEditingId(null);
+  };
 
   const filteredSessions = sessions.filter(s => 
     s.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -93,19 +104,54 @@ export default function Sidebar({
                 }`}
                 onClick={() => onSelectSession(session.id)}
               >
-                <div className="flex items-center gap-3 overflow-hidden">
+                <div className="flex flex-1 items-center gap-3 overflow-hidden">
                   <MessageSquare size={16} className={`shrink-0 ${currentSessionId === session.id ? 'text-blue-500' : 'text-slate-400 dark:text-slate-500'}`} />
-                  <span className="text-sm truncate">{session.title || '新对话'}</span>
+                  {editingId === session.id ? (
+                    <input
+                      autoFocus
+                      type="text"
+                      className="flex-1 bg-white dark:bg-slate-800 border border-blue-300 dark:border-blue-600 rounded px-2 py-1 text-sm outline-none w-full"
+                      value={editTitle}
+                      onChange={(e) => setEditTitle(e.target.value)}
+                      onBlur={() => handleEditSubmit(session.id)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          handleEditSubmit(session.id);
+                        } else if (e.key === 'Escape') {
+                          setEditingId(null);
+                        }
+                      }}
+                      onClick={(e) => e.stopPropagation()}
+                    />
+                  ) : (
+                    <span className="text-sm truncate flex-1">{session.title || '新对话'}</span>
+                  )}
                 </div>
-                <button 
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onDeleteSession(session.id);
-                  }}
-                  className="opacity-0 group-hover:opacity-100 p-1.5 text-slate-300 dark:text-slate-600 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded transition-all"
-                >
-                  <Trash2 size={14} />
-                </button>
+                {!editingId && (
+                  <div className="opacity-0 group-hover:opacity-100 flex items-center justify-end shrink-0 transition-all">
+                    <button 
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setEditingId(session.id);
+                        setEditTitle(session.title || '新对话');
+                      }}
+                      className="p-1.5 text-slate-300 dark:text-slate-600 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded transition-all"
+                      title="重命名对话"
+                    >
+                      <Edit2 size={14} />
+                    </button>
+                    <button 
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onDeleteSession(session.id);
+                      }}
+                      className="p-1.5 text-slate-300 dark:text-slate-600 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded transition-all"
+                      title="删除对话"
+                    >
+                      <Trash2 size={14} />
+                    </button>
+                  </div>
+                )}
               </motion.div>
             ))}
           </AnimatePresence>
@@ -122,17 +168,7 @@ export default function Sidebar({
           <span className="text-[10px] text-slate-300 dark:text-slate-600 font-medium tracking-widest">V1.0</span>
         </div>
       </motion.aside>
-
-      {/* Mobile Toggle Button (only visible when sidebar is closed) */}
-      {!isOpen && (
-        <button 
-          onClick={onToggle}
-          className="fixed left-4 top-4 z-50 p-2 bg-white dark:bg-slate-800 rounded-lg shadow-sm hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors border border-slate-100 dark:border-slate-700 text-slate-400"
-        >
-          <PanelLeft size={20} />
-        </button>
-      )}
-
+      
       {/* Mobile Overlay */}
       <AnimatePresence>
         {isOpen && (
