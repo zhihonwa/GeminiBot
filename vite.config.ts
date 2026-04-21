@@ -38,6 +38,12 @@ export default defineConfig(({mode}) => {
     define: {
       'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY),
     },
+    build: {
+      target: 'chrome80', // 提高安卓 WebView 兼容性
+      cssTarget: 'chrome80',
+      minify: 'esbuild',
+      assetsInlineLimit: 0, // 强制导出文件，避免内联大资源在老机器上失败
+    },
     resolve: {
       alias: {
         '@': path.resolve(__dirname, '.'),

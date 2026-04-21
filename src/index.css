@@ -5,8 +5,8 @@
   --color-brand: #2563eb; /* blue-600 */
 }
 
-/* Enable class-based dark mode for Tailwind 4 */
-@variant dark (&:where(.dark, .dark *));
+/* Use a simpler variant for broader compatibility */
+@custom-variant dark (&:is(.dark, .dark *));
 
 @layer base {
   body {
