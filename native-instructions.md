@@ -1,9 +1,11 @@
 # 如何将 GeminiBot 转换为安卓 APK 或 Windows EXE
 
-您已经成功配置了 PWA，可以在浏览器中直接安装。如果您需要真正的 **.apk** 或 **.exe** 安装包，请按照以下步骤操作：
-
-## 第一步：导出代码
-点击应用右上角设置图标（齿轮），选择 **“Export to ZIP”**（导出为 ZIP），并将文件解压到您的电脑上。
+## 🚀 关键：本地环境初始化
+导出代码并解压后，请务必先运行：
+```bash
+npm install
+```
+这会安装所有必要的构建工具（包括 `vite`, `capacitor`, `electron` 等）。
 
 ---
 
@@ -20,24 +22,23 @@
 在解压后的代码根目录下打开终端（命令行），运行以下命令：
 
 ### 生成 Windows 安装包 (.exe)
-```bash
-# 安装必要工具
-npm install electron electron-builder --save-dev
+我已为您配置好了 Electron 入口环境，并修复了路径加载问题（Base Path Fix）。
 
+```bash
 # 运行打包命令
 npm run build:windows
 ```
-打包完成后，您会在 `dist` 文件夹中找到您的 Windows 程序。
+打包完成后，您会在 **`dist-electron`** 文件夹中找到您的 Windows 便携式程序（Portable EXE）。
+
+**💡 提示：如果运行后仍然是空白内容？**
+1. 请确保您在本地运行过 `npm run build`。
+2. 检查 `vite.config.ts` 中的 `base: './'` 配置是否生效（我已为您添加）。
+3. 您可以尝试在 `electron-main.cjs` 中取消注释 `win.webContents.openDevTools();` 行，然后重新打包，运行程序后在开发者工具中查看 Console 错误。
 
 ### 生成安卓安装包 (.apk)
 ```bash
-# 安装 Capacitor 工具
-npm install @capacitor/core @capacitor/cli @capacitor/android
-
-# 初始化配置
+# 初始化配置（仅需运行一次）
 npx cap init GeminiBot com.geminibot.app --web-dir=dist
-
-# 添加安卓平台支持
 npx cap add android
 
 # 编译并生成 APK

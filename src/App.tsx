@@ -211,8 +211,10 @@ ${beijingTime}
     const root = window.document.documentElement;
     if (settings.theme === 'dark') {
       root.classList.add('dark');
+      root.style.colorScheme = 'dark';
     } else {
       root.classList.remove('dark');
+      root.style.colorScheme = 'light';
     }
   }, [settings.theme]);
 

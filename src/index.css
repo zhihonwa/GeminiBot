@@ -5,8 +5,11 @@
   --color-brand: #2563eb; /* blue-600 */
 }
 
+/* Enable class-based dark mode for Tailwind 4 */
+@variant dark (&:where(.dark, .dark *));
+
 @layer base {
   body {
-    @apply font-sans bg-[#F8FAFC] text-slate-800;
+    @apply font-sans bg-[#F8FAFC] text-slate-800 dark:bg-slate-900 dark:text-slate-100;
   }
 }

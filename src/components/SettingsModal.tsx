@@ -66,7 +66,9 @@ export default function SettingsModal({ settings, onSave, onClose }: SettingsMod
                     className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-xl px-4 py-3 text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-blue-500/20 outline-none transition-all cursor-pointer appearance-none"
                   >
                     {MODELS.map(m => (
-                      <option key={m.id} value={m.id}>{m.name}</option>
+                      <option key={m.id} value={m.id} className="bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100">
+                        {m.name}
+                      </option>
                     ))}
                   </select>
                 </div>
