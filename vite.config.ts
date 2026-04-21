@@ -7,11 +7,12 @@ import { VitePWA } from 'vite-plugin-pwa';
 export default defineConfig(({mode}) => {
   const env = loadEnv(mode, '.', '');
   return {
-    base: mode === 'production' ? './' : '/',
+    base: './', // 强制所有环境下使用相对路径，对 Electron/Capacitor 更友好
     plugins: [
       react(), 
       tailwindcss(),
-      VitePWA({
+      // 仅在非原生环境下启用 PWA (可选，如果还是不行可以彻底注释掉)
+      !process.env.IS_NATIVE && VitePWA({
         registerType: 'autoUpdate',
         includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'mask-icon.svg'],
         manifest: {

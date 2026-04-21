@@ -82,6 +82,8 @@ jobs:
 
       - name: Build Web
         run: npm run build
+        env:
+          IS_NATIVE: true
 
       - name: Build Android APK
         run: |
