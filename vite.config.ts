@@ -1,5 +1,6 @@
 import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
+import legacy from '@vitejs/plugin-legacy';
 import path from 'path';
 import {defineConfig, loadEnv} from 'vite';
 import { VitePWA } from 'vite-plugin-pwa';
@@ -7,11 +8,15 @@ import { VitePWA } from 'vite-plugin-pwa';
 export default defineConfig(({mode}) => {
   const env = loadEnv(mode, '.', '');
   return {
-    base: './', // 强制所有环境下使用相对路径，对 Electron/Capacitor 更友好
+    base: './', 
     plugins: [
       react(), 
       tailwindcss(),
-      // 仅在非原生环境下启用 PWA (可选，如果还是不行可以彻底注释掉)
+      legacy({
+        targets: ['chrome >= 70'], // 强制支持旧版 Chrome
+        additionalLegacyPolyfills: ['regenerator-runtime/runtime']
+      }),
+      // 仅在非原生环境下启用 PWA
       !process.env.IS_NATIVE && VitePWA({
         registerType: 'autoUpdate',
         includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'mask-icon.svg'],
@@ -39,10 +44,11 @@ export default defineConfig(({mode}) => {
       'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY),
     },
     build: {
-      target: 'chrome80', // 提高安卓 WebView 兼容性
-      cssTarget: 'chrome80',
+      target: 'chrome70', 
+      cssTarget: 'chrome70',
       minify: 'esbuild',
-      assetsInlineLimit: 0, // 强制导出文件，避免内联大资源在老机器上失败
+      assetsInlineLimit: 0,
+      cssCodeSplit: false,
     },
     resolve: {
       alias: {

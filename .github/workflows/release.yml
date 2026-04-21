@@ -47,7 +47,7 @@ jobs:
         run: |
           npm run build:windows
           # 重命名为统一格式 GeminiBot-v1.0.x-win.exe
-          Move-Item -Path "dist-electron\*.exe" -Destination "GeminiBot-${{ github.ref_name }}-Windows.exe"
+          Move-Item -Path "dist-electron\*.exe" -Destination "GeminiBot-${{ github.ref_name }}-Win.exe"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

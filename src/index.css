@@ -5,11 +5,14 @@
   --color-brand: #2563eb; /* blue-600 */
 }
 
-/* Use a simpler variant for broader compatibility */
-@custom-variant dark (&:is(.dark, .dark *));
+/* Use standard class-based dark mode for old WebView support */
+.dark body {
+  background-color: #0f172a; /* slate-900 */
+  color: #f1f5f9; /* slate-100 */
+}
 
 @layer base {
   body {
-    @apply font-sans bg-[#F8FAFC] text-slate-800 dark:bg-slate-900 dark:text-slate-100;
+    @apply font-sans bg-[#F8FAFC] text-slate-800;
   }
 }
