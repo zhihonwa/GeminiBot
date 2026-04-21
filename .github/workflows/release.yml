@@ -47,14 +47,14 @@ jobs:
         run: |
           npm run build:windows
           # 重命名为统一格式 GeminiBot-v1.0.x-win.exe
-          Move-Item -Path "dist-electron\*.exe" -Destination "GeminiBot-${{ github.ref_name }}-Win.exe"
+          Move-Item -Path "dist-electron\*.exe" -Destination "GeminiBot-${{ github.ref_name }}-Windows.exe"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload Windows Asset
         uses: softprops/action-gh-release@v2
         with:
-          files: GeminiBot-${{ github.ref_name }}-win.exe
+          files: GeminiBot-${{ github.ref_name }}-Windows.exe
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
