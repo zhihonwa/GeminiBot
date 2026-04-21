@@ -1,6 +1,6 @@
-# GeminiBot - 专业级 AI 智能助手
+# reGeminiBot - 专业级 AI 智能助手
 
-GeminiBot 是一款基于 Google Gemini 系列模型构建的现代化、全能型 AI 对话助手。它不仅提供了极致的网页端体验，还通过 Capacitor 和 Electron 实现了 **Android (APK)** 与 **Windows (EXE)** 的跨平台支持。
+reGeminiBot 是一款基于 Google Gemini 系列模型构建的现代化、全能型 AI 对话助手。它不仅提供了极致的网页端体验，还通过 Capacitor 和 Electron 实现了 **Android (APK)** 与 **Windows (EXE)** 的跨平台支持。
 
 ## 📥 下载与安装
 
