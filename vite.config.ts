@@ -44,17 +44,9 @@ export default defineConfig(({mode}) => {
     build: {
       target: 'chrome70', 
       cssTarget: 'chrome70',
-      minify: 'lightningcss', // 使用 lightningcss 进行压缩和转换
+      minify: 'terser', // 改回普通压缩或terser，避免未知编译器问题
       assetsInlineLimit: 0,
       cssCodeSplit: false,
-    },
-    css: {
-      transformer: 'lightningcss',
-      lightningcss: {
-        targets: {
-          chrome: 70 << 16 // 转换为 lightningcss 要求的版本格式
-        }
-      }
     },
     resolve: {
       alias: {
