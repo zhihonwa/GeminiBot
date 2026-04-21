@@ -1,4 +1,3 @@
-import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
 import legacy from '@vitejs/plugin-legacy';
 import path from 'path';
@@ -11,7 +10,6 @@ export default defineConfig(({mode}) => {
     base: './', 
     plugins: [
       react(), 
-      tailwindcss(),
       legacy({
         targets: ['chrome >= 70'], // 强制支持旧版 Chrome
         additionalLegacyPolyfills: ['regenerator-runtime/runtime']
