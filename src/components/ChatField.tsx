@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, User, Loader2, StopCircle, Mic, MicOff, PanelLeft, Paperclip } from 'lucide-react';
+import { Send, User, Loader2, StopCircle, Mic, MicOff, PanelLeft, Paperclip, X } from 'lucide-react';
 import { Message } from '../types';
 import { motion, AnimatePresence } from 'motion/react';
 import { MODELS } from '../constants';
@@ -27,8 +27,10 @@ export default function ChatField({
 }: ChatFieldProps) {
   const [input, setInput] = useState('');
   const [isRecording, setIsRecording] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const recognitionRef = useRef<any>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -86,9 +88,20 @@ export default function ChatField({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (input.trim() && !isLoading) {
-      onSendMessage(input.trim());
+    if ((input.trim() || selectedFile) && !isLoading) {
+      const messageContent = selectedFile ? `[已附带文件: ${selectedFile.name}]\n${input.trim()}` : input.trim();
+      onSendMessage(messageContent);
       setInput('');
+      setSelectedFile(null);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+    }
+  };
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      setSelectedFile(e.target.files[0]);
     }
   };
 
@@ -182,16 +195,48 @@ export default function ChatField({
       <footer className="p-6 bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 transition-colors duration-300">
         <form 
           onSubmit={handleSubmit}
-          className="max-w-3xl mx-auto relative"
+          className="max-w-3xl mx-auto relative flex flex-col gap-2"
         >
+          <AnimatePresence>
+            {selectedFile && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 10 }}
+                className="flex items-center justify-between bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 px-3 py-2 rounded-xl text-xs w-full max-w-[200px] border border-blue-100 dark:border-blue-800"
+              >
+                <div className="flex items-center gap-2 overflow-hidden">
+                  <Paperclip size={14} className="shrink-0" />
+                  <span className="truncate">{selectedFile.name}</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSelectedFile(null);
+                    if (fileInputRef.current) fileInputRef.current.value = '';
+                  }}
+                  className="p-1 hover:bg-blue-100 dark:hover:bg-blue-800 rounded-full transition-colors shrink-0"
+                >
+                  <X size={14} />
+                </button>
+              </motion.div>
+            )}
+          </AnimatePresence>
           <div className="relative flex items-center bg-slate-100 dark:bg-slate-800 rounded-2xl transition-all overflow-hidden p-1 shadow-sm border border-transparent focus-within:border-blue-500/30">
+            <input 
+              type="file" 
+              ref={fileInputRef}
+              onChange={handleFileSelect}
+              className="hidden" 
+              accept="*/*"
+            />
             <button
               type="button"
-              className="p-3 rounded-xl transition-all text-slate-400 hover:text-blue-500 hover:bg-slate-200 dark:hover:bg-slate-700 relative"
+              onClick={() => fileInputRef.current?.click()}
+              className="p-3 rounded-xl transition-all text-slate-400 hover:text-blue-500 hover:bg-slate-200 dark:hover:bg-slate-700"
               title="上传文件"
             >
               <Paperclip size={20} />
-              <input type="file" className="absolute inset-0 opacity-0 cursor-pointer" title="上传文件" />
             </button>
             <button
               type="button"
@@ -232,9 +277,9 @@ export default function ChatField({
               ) : (
                 <button
                   type="submit"
-                  disabled={!input.trim()}
+                  disabled={!input.trim() && !selectedFile}
                   className={`w-10 h-10 rounded-xl flex items-center justify-center shadow-lg transition-all ${
-                    input.trim() 
+                    (input.trim() || selectedFile)
                       ? 'bg-blue-600 text-white shadow-blue-500/30 hover:bg-blue-700' 
                       : 'bg-slate-200 dark:bg-slate-700 text-slate-400 dark:text-slate-600 shadow-none cursor-not-allowed'
                   }`}

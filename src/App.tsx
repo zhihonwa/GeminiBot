@@ -248,40 +248,42 @@ ${beijingTime}
   };
 
   return (
-    <div className={`flex h-screen w-screen overflow-hidden bg-slate-50 dark:bg-slate-900 ${fontSizeMap[settings.fontSize]} transition-colors duration-300`}>
-      <Sidebar 
-        sessions={sessions}
-        currentSessionId={currentSessionId}
-        isOpen={isSidebarOpen}
-        onToggle={() => setIsSidebarOpen(!isSidebarOpen)}
-        onSelectSession={handleSelectSession}
-        onNewSession={createNewSession}
-        onDeleteSession={handleDeleteSession}
-        onRenameSession={handleRenameSession}
-        onOpenSettings={() => setIsSettingsOpen(true)}
-      />
-      
-      <main className="flex-1 overflow-hidden transition-all duration-300">
-        <ChatField 
-          messages={currentSession?.messages || []}
-          selectedModel={settings.model}
-          onModelChange={handleModelChange}
-          onSendMessage={handleSendMessage}
-          isLoading={isLoading}
-          isSidebarOpen={isSidebarOpen}
-          onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
+    <div className={settings.theme === 'dark' ? 'dark' : ''}>
+      <div className={`flex h-screen w-screen overflow-hidden bg-slate-50 dark:bg-slate-900 ${fontSizeMap[settings.fontSize]} transition-colors duration-300`}>
+        <Sidebar 
+          sessions={sessions}
+          currentSessionId={currentSessionId}
+          isOpen={isSidebarOpen}
+          onToggle={() => setIsSidebarOpen(!isSidebarOpen)}
+          onSelectSession={handleSelectSession}
+          onNewSession={createNewSession}
+          onDeleteSession={handleDeleteSession}
+          onRenameSession={handleRenameSession}
+          onOpenSettings={() => setIsSettingsOpen(true)}
         />
-      </main>
-
-      <AnimatePresence>
-        {isSettingsOpen && (
-          <SettingsModal 
-            settings={settings}
-            onSave={handleSaveSettings}
-            onClose={() => setIsSettingsOpen(false)}
+        
+        <main className="flex-1 overflow-hidden transition-all duration-300">
+          <ChatField 
+            messages={currentSession?.messages || []}
+            selectedModel={settings.model}
+            onModelChange={handleModelChange}
+            onSendMessage={handleSendMessage}
+            isLoading={isLoading}
+            isSidebarOpen={isSidebarOpen}
+            onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
           />
-        )}
-      </AnimatePresence>
+        </main>
+
+        <AnimatePresence>
+          {isSettingsOpen && (
+            <SettingsModal 
+              settings={settings}
+              onSave={handleSaveSettings}
+              onClose={() => setIsSettingsOpen(false)}
+            />
+          )}
+        </AnimatePresence>
+      </div>
     </div>
   );
 }

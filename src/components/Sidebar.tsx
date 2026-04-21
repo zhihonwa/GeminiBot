@@ -128,14 +128,14 @@ export default function Sidebar({
                   )}
                 </div>
                 {!editingId && (
-                  <div className="opacity-0 group-hover:opacity-100 flex items-center justify-end shrink-0 transition-all">
+                  <div className="md:opacity-0 opacity-100 group-hover:opacity-100 flex items-center justify-end shrink-0 transition-all">
                     <button 
                       onClick={(e) => {
                         e.stopPropagation();
                         setEditingId(session.id);
                         setEditTitle(session.title || '新对话');
                       }}
-                      className="p-1.5 text-slate-300 dark:text-slate-600 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded transition-all"
+                      className="p-1.5 text-slate-400 dark:text-slate-500 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded transition-all"
                       title="重命名对话"
                     >
                       <Edit2 size={14} />
@@ -145,7 +145,7 @@ export default function Sidebar({
                         e.stopPropagation();
                         onDeleteSession(session.id);
                       }}
-                      className="p-1.5 text-slate-300 dark:text-slate-600 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded transition-all"
+                      className="p-1.5 text-slate-400 dark:text-slate-500 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded transition-all"
                       title="删除对话"
                     >
                       <Trash2 size={14} />
