@@ -30,6 +30,7 @@
     }
   },
   "dependencies": {
+    "@capacitor/clipboard": "^6.0.3",
     "@google/genai": "^1.29.0",
     "@types/uuid": "^10.0.0",
     "@vitejs/plugin-legacy": "^6.0.0",

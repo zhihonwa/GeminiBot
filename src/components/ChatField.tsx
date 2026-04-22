@@ -3,6 +3,7 @@ import { Send, User, Loader2, StopCircle, Mic, MicOff, PanelLeft, Paperclip, X, 
 import { Message, CustomModel } from '../types';
 import { motion, AnimatePresence } from 'motion/react';
 import { MODELS } from '../constants';
+import { Clipboard as CapacitorClipboard } from '@capacitor/clipboard';
 
 interface ChatFieldProps {
   messages: Message[];
@@ -108,12 +109,58 @@ export default function ChatField({
     }
   };
 
-  const handleCopy = (text: string, index: number) => {
-    navigator.clipboard.writeText(text);
-    setCopiedId(index);
-    setTimeout(() => {
-      setCopiedId(current => current === index ? null : current);
-    }, 2000);
+  const handleCopy = async (text: string, index: number) => {
+    let success = false;
+
+    try {
+      // Level 1: Try Capacitor Clipboard plugin (most reliable on Android native)
+      const win = window as any;
+      if (win.Capacitor && win.Capacitor.isNativePlatform && win.Capacitor.isNativePlatform()) {
+        await CapacitorClipboard.write({ string: text });
+        success = true;
+      }
+    } catch {
+      // Capacitor Clipboard not available or failed, try next level
+    }
+
+    if (!success) {
+      try {
+        // Level 2: Try navigator.clipboard API (standard Web API)
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          await navigator.clipboard.writeText(text);
+          success = true;
+        }
+      } catch {
+        // navigator.clipboard failed (e.g., not a secure context in WebView), try next level
+      }
+    }
+
+    if (!success) {
+      try {
+        // Level 3: Fallback to document.execCommand('copy') for older WebView
+        const textarea = document.createElement('textarea');
+        textarea.value = text;
+        textarea.style.position = 'fixed';
+        textarea.style.left = '-9999px';
+        textarea.style.top = '-9999px';
+        textarea.style.opacity = '0';
+        document.body.appendChild(textarea);
+        textarea.focus();
+        textarea.select();
+        success = document.execCommand('copy');
+        document.body.removeChild(textarea);
+      } catch {
+        // All copy methods failed
+      }
+    }
+
+    // Only show success feedback if copy actually succeeded
+    if (success) {
+      setCopiedId(index);
+      setTimeout(() => {
+        setCopiedId(current => current === index ? null : current);
+      }, 2000);
+    }
   };
 
   return (

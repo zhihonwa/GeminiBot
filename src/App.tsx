@@ -228,11 +228,16 @@ ${beijingTime}
     const root = window.document.documentElement;
     if (settings.theme === 'dark') {
       root.classList.add('dark');
+      // Set color-scheme for Android WebView native controls (select, scrollbar, etc.)
+      root.style.colorScheme = 'dark';
       // Polyfill hack for older Android Webviews that ignore class changes dynamically
       document.body.style.backgroundColor = '#0f172a';
+      document.body.style.colorScheme = 'dark';
     } else {
       root.classList.remove('dark');
+      root.style.colorScheme = 'light';
       document.body.style.backgroundColor = '#F8FAFC';
+      document.body.style.colorScheme = 'light';
     }
   }, [settings.theme]);
 

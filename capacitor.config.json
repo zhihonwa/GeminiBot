@@ -2,5 +2,9 @@
   "appId": "com.geminibot.app",
   "appName": "GeminiBot",
   "webDir": "dist",
-  "plugins": {}
+  "plugins": {
+    "CapacitorHttp": {
+      "enabled": true
+    }
+  }
 }

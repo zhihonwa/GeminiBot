@@ -4,11 +4,20 @@
 
 @layer base {
   body {
-    @apply font-sans bg-[#F8FAFC] text-slate-800;
+    @apply font-sans;
   }
 }
 
-.dark body {
+/* Light mode defaults - outside @layer to ensure higher priority than Tailwind utilities in Android WebView */
+html:not(.dark) body {
+  background-color: #F8FAFC;
+  color: #1e293b; /* slate-800 */
+  color-scheme: light;
+}
+
+/* Dark mode overrides - use html.dark body for higher specificity to override Tailwind utility classes */
+html.dark body {
   background-color: #0f172a; /* slate-900 */
   color: #f1f5f9; /* slate-100 */
+  color-scheme: dark;
 }
