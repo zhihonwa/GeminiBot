@@ -87,7 +87,7 @@ export default function Sidebar({
           </div>
         </div>
 
-        <div className="px-6 py-2 text-[10px] uppercase tracking-wider text-slate-400 font-bold">最近对话</div>
+        <div className="px-6 py-2 text-[10px] uppercase tracking-wider text-slate-400 dark:text-slate-500 font-bold">最近对话</div>
 
         <div className="flex-1 overflow-y-auto px-2 space-y-1">
           <AnimatePresence>

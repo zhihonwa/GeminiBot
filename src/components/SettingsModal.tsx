@@ -55,28 +55,28 @@ export default function SettingsModal({ settings, onSave, onClose }: SettingsMod
           <div className="w-32 border-r border-slate-100 dark:border-slate-800 p-2 space-y-1">
             <button 
               onClick={() => setActiveTab('general')}
-              className={`w-full flex flex-col items-center gap-1 p-3 rounded-xl transition-all ${activeTab === 'general' ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-600' : 'text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800'}`}
+              className={`w-full flex flex-col items-center gap-1 p-3 rounded-xl transition-all ${activeTab === 'general' ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400' : 'text-slate-400 dark:text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800'}`}
             >
               <Sliders size={20} />
               <span className="text-[10px] font-bold">常规</span>
             </button>
             <button 
               onClick={() => setActiveTab('model_params')}
-              className={`w-full flex flex-col items-center gap-1 p-3 rounded-xl transition-all ${activeTab === 'model_params' ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-600' : 'text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800'}`}
+              className={`w-full flex flex-col items-center gap-1 p-3 rounded-xl transition-all ${activeTab === 'model_params' ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400' : 'text-slate-400 dark:text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800'}`}
             >
               <TypeIcon size={20} />
               <span className="text-[10px] font-bold">模型参数</span>
             </button>
             <button 
               onClick={() => setActiveTab('models_management')}
-              className={`w-full flex flex-col items-center gap-1 p-3 rounded-xl transition-all ${activeTab === 'models_management' ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-600' : 'text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800'}`}
+              className={`w-full flex flex-col items-center gap-1 p-3 rounded-xl transition-all ${activeTab === 'models_management' ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400' : 'text-slate-400 dark:text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800'}`}
             >
               <Database size={20} />
               <span className="text-[10px] font-bold">大模型管理</span>
             </button>
             <button 
               onClick={() => setActiveTab('appearance')}
-              className={`w-full flex flex-col items-center gap-1 p-3 rounded-xl transition-all ${activeTab === 'appearance' ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-600' : 'text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800'}`}
+              className={`w-full flex flex-col items-center gap-1 p-3 rounded-xl transition-all ${activeTab === 'appearance' ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400' : 'text-slate-400 dark:text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800'}`}
             >
               {localSettings.theme === 'dark' ? <Moon size={20} /> : <Sun size={20} />}
               <span className="text-[10px] font-bold">外观</span>
@@ -119,7 +119,7 @@ export default function SettingsModal({ settings, onSave, onClose }: SettingsMod
                     </div>
                     <div>
                       <p className="text-sm font-bold text-slate-700 dark:text-slate-200">实时联网搜索</p>
-                      <p className="text-[10px] text-slate-400">允许 Gemini 获取最新信息</p>
+                      <p className="text-[10px] text-slate-400 dark:text-slate-500">允许 Gemini 获取最新信息</p>
                     </div>
                   </div>
                   <button 
@@ -144,7 +144,7 @@ export default function SettingsModal({ settings, onSave, onClose }: SettingsMod
                     onChange={(e) => setLocalSettings(prev => ({ ...prev, temperature: parseFloat(e.target.value) }))}
                     className="w-full h-2 bg-slate-100 dark:bg-slate-800 rounded-lg appearance-none cursor-pointer accent-blue-600"
                   />
-                  <p className="text-[10px] text-slate-400">控制随机性：值越高，输出越有创意；值越低，输出越稳定确切。</p>
+                  <p className="text-[10px] text-slate-400 dark:text-slate-500">控制随机性：值越高，输出越有创意；值越低，输出越稳定确切。</p>
                 </div>
 
                 <div className="space-y-4">
@@ -227,7 +227,7 @@ export default function SettingsModal({ settings, onSave, onClose }: SettingsMod
                         </div>
                         <span className="text-[10px] text-slate-500 dark:text-slate-400 font-mono truncate">{m.id}</span>
                         {m.baseUrl && (
-                          <span className="text-[10px] text-slate-400 bg-slate-50 dark:bg-slate-900/50 p-1 rounded font-mono truncate">{m.baseUrl}</span>
+                          <span className="text-[10px] text-slate-400 dark:text-slate-500 bg-slate-50 dark:bg-slate-900/50 p-1 rounded font-mono truncate">{m.baseUrl}</span>
                         )}
                       </div>
                     ))}
@@ -244,7 +244,7 @@ export default function SettingsModal({ settings, onSave, onClose }: SettingsMod
                   <div className="grid grid-cols-2 gap-3">
                     <button 
                       onClick={() => setLocalSettings(prev => ({ ...prev, theme: 'light' }))}
-                      className={`flex items-center justify-center gap-2 py-3 rounded-xl border transition-all ${localSettings.theme === 'light' ? 'bg-blue-50 border-blue-200 text-blue-600 ring-2 ring-blue-500/10' : 'bg-white dark:bg-slate-800 border-slate-100 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}
+                      className={`flex items-center justify-center gap-2 py-3 rounded-xl border transition-all ${localSettings.theme === 'light' ? 'bg-blue-50 dark:bg-blue-900/30 border-blue-200 dark:border-blue-800 text-blue-600 dark:text-blue-400 ring-2 ring-blue-500/10' : 'bg-white dark:bg-slate-800 border-slate-100 dark:border-slate-700 text-slate-600 dark:text-slate-400'}`}
                     >
                       <Sun size={18} />
                       浅色
@@ -266,7 +266,7 @@ export default function SettingsModal({ settings, onSave, onClose }: SettingsMod
                       <button
                         key={size}
                         onClick={() => setLocalSettings(prev => ({ ...prev, fontSize: size }))}
-                        className={`flex-1 py-2 rounded-lg text-sm font-bold transition-all ${localSettings.fontSize === size ? 'bg-white dark:bg-slate-700 shadow-sm text-blue-600' : 'text-slate-400 hover:text-slate-500'}`}
+                        className={`flex-1 py-2 rounded-lg text-sm font-bold transition-all ${localSettings.fontSize === size ? 'bg-white dark:bg-slate-700 shadow-sm text-blue-600 dark:text-blue-400' : 'text-slate-400 dark:text-slate-500 hover:text-slate-500 dark:hover:text-slate-400'}`}
                       >
                         {size === 'sm' ? '小' : size === 'md' ? '中' : '大'}
                       </button>

@@ -328,7 +328,7 @@ export default function ChatField({
                 }
               }}
               placeholder={isRecording ? "正在听..." : "给 Gemini 发送消息..."}
-              className="flex-1 max-h-32 resize-none bg-transparent border-none focus:ring-0 text-sm py-3 px-3 outline-none placeholder:text-slate-400 text-slate-800 dark:text-slate-200"
+              className="flex-1 max-h-32 resize-none bg-transparent border-none focus:ring-0 text-sm py-3 px-3 outline-none placeholder:text-slate-400 dark:placeholder:text-slate-500 text-slate-800 dark:text-slate-200"
             />
             
             <div className="flex items-center gap-2 px-1 mb-1">
