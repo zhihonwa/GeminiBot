@@ -13,7 +13,7 @@ export const storage = {
       parsed.customModels = MODELS;
     }
     
-    return parsed || { 
+    const defaults: AppSettings = { 
       model: 'gemini-1.5-pro', 
       apiKey: '',
       temperature: 0.7,
@@ -24,6 +24,18 @@ export const storage = {
       webSearch: true,
       customModels: MODELS
     };
+
+    const settings = parsed || defaults;
+
+    // Validate: if settings.model is not in customModels list, switch to first available
+    if (settings.customModels && settings.customModels.length > 0) {
+      const modelExists = settings.customModels.some((m: any) => m.id === settings.model);
+      if (!modelExists) {
+        settings.model = settings.customModels[0].id;
+      }
+    }
+
+    return settings;
   },
   
   saveSettings: (settings: AppSettings) => {

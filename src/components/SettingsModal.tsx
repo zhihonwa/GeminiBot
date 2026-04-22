@@ -27,12 +27,16 @@ export default function SettingsModal({ settings, onSave, onClose }: SettingsMod
   };
 
   const handleDeleteModel = (id: string) => {
-    setLocalSettings(prev => ({
-      ...prev,
-      customModels: (prev.customModels || []).filter(m => m.id !== id),
-      // Automatically switch default if the deleted model is the current one
-      model: prev.model === id ? (prev.customModels?.[0]?.id || '') : prev.model
-    }));
+    setLocalSettings(prev => {
+      const remainingModels = (prev.customModels || []).filter(m => m.id !== id);
+      return {
+        ...prev,
+        customModels: remainingModels,
+        // Automatically switch default if the deleted model is the current one
+        // Use the filtered list (remainingModels) to pick the new default
+        model: prev.model === id ? (remainingModels[0]?.id || '') : prev.model
+      };
+    });
   };
 
   return (
