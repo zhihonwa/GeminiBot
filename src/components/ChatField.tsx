@@ -241,7 +241,7 @@ export default function ChatField({
               </motion.div>
             )}
           </AnimatePresence>
-          <div className="relative flex items-center bg-slate-100 dark:bg-slate-800 rounded-2xl transition-all overflow-hidden p-1 shadow-sm border border-transparent focus-within:border-blue-500/30">
+          <div className="relative flex items-end bg-slate-100 dark:bg-slate-800 rounded-2xl transition-all overflow-hidden p-1 shadow-sm border border-transparent focus-within:border-blue-500/30">
             <input 
               type="file" 
               ref={fileInputRef}
@@ -252,7 +252,7 @@ export default function ChatField({
             <button
               type="button"
               onClick={() => fileInputRef.current?.click()}
-              className="p-3 rounded-xl transition-all text-slate-400 hover:text-blue-500 hover:bg-slate-200 dark:hover:bg-slate-700"
+              className="p-3 mb-1 rounded-xl transition-all text-slate-400 hover:text-blue-500 hover:bg-slate-200 dark:hover:bg-slate-700"
               title="上传文件"
             >
               <Paperclip size={20} />
@@ -260,7 +260,7 @@ export default function ChatField({
             <button
               type="button"
               onClick={toggleRecording}
-              className={`p-3 rounded-xl transition-all ${
+              className={`p-3 mb-1 rounded-xl transition-all ${
                 isRecording 
                   ? 'bg-red-100 dark:bg-red-900/30 text-red-500 animate-pulse' 
                   : 'text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700 hover:text-blue-500'
@@ -271,7 +271,7 @@ export default function ChatField({
             </button>
 
             <textarea
-              rows={1}
+              rows={3}
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => {
@@ -281,10 +281,10 @@ export default function ChatField({
                 }
               }}
               placeholder={isRecording ? "正在听..." : "给 Gemini 发送消息..."}
-              className="flex-1 max-h-32 resize-none bg-transparent border-none focus:ring-0 text-sm py-3 px-3 outline-none placeholder:text-slate-400 dark:text-slate-200"
+              className="flex-1 max-h-32 resize-none bg-transparent border-none focus:ring-0 text-sm py-3 px-3 outline-none placeholder:text-slate-400 text-slate-800 dark:text-slate-200"
             />
             
-            <div className="flex items-center gap-2 px-1">
+            <div className="flex items-center gap-2 px-1 mb-1">
               {isLoading ? (
                 <button
                   type="button"
