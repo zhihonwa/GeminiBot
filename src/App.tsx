@@ -226,15 +226,13 @@ ${beijingTime}
   // Add this useEffect to handle theme and global styles
   useEffect(() => {
     const root = window.document.documentElement;
-    const body = window.document.body;
     if (settings.theme === 'dark') {
       root.classList.add('dark');
-      body.classList.add('dark');
-      root.style.colorScheme = 'dark';
+      // Polyfill hack for older Android Webviews that ignore class changes dynamically
+      document.body.style.backgroundColor = '#0f172a';
     } else {
       root.classList.remove('dark');
-      body.classList.remove('dark');
-      root.style.colorScheme = 'light';
+      document.body.style.backgroundColor = '#F8FAFC';
     }
   }, [settings.theme]);
 
@@ -251,43 +249,41 @@ ${beijingTime}
   };
 
   return (
-    <div className={settings.theme === 'dark' ? 'dark' : ''}>
-      <div className={`flex h-screen w-screen overflow-hidden bg-slate-50 dark:bg-slate-900 ${fontSizeMap[settings.fontSize]} transition-colors duration-300`}>
-        <Sidebar 
-          sessions={sessions}
-          currentSessionId={currentSessionId}
-          isOpen={isSidebarOpen}
-          onToggle={() => setIsSidebarOpen(!isSidebarOpen)}
-          onSelectSession={handleSelectSession}
-          onNewSession={createNewSession}
-          onDeleteSession={handleDeleteSession}
-          onRenameSession={handleRenameSession}
-          onOpenSettings={() => setIsSettingsOpen(true)}
+    <div className={`flex h-screen w-screen overflow-hidden bg-slate-50 dark:bg-slate-900 ${fontSizeMap[settings.fontSize]} transition-colors duration-300`}>
+      <Sidebar 
+        sessions={sessions}
+        currentSessionId={currentSessionId}
+        isOpen={isSidebarOpen}
+        onToggle={() => setIsSidebarOpen(!isSidebarOpen)}
+        onSelectSession={handleSelectSession}
+        onNewSession={createNewSession}
+        onDeleteSession={handleDeleteSession}
+        onRenameSession={handleRenameSession}
+        onOpenSettings={() => setIsSettingsOpen(true)}
+      />
+      
+      <main className="flex-1 overflow-hidden transition-all duration-300">
+        <ChatField 
+          messages={currentSession?.messages || []}
+          selectedModel={settings.model}
+          availableModels={settings.customModels || []}
+          onModelChange={handleModelChange}
+          onSendMessage={handleSendMessage}
+          isLoading={isLoading}
+          isSidebarOpen={isSidebarOpen}
+          onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
         />
-        
-        <main className="flex-1 overflow-hidden transition-all duration-300">
-          <ChatField 
-            messages={currentSession?.messages || []}
-            selectedModel={settings.model}
-            availableModels={settings.customModels || []}
-            onModelChange={handleModelChange}
-            onSendMessage={handleSendMessage}
-            isLoading={isLoading}
-            isSidebarOpen={isSidebarOpen}
-            onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
-          />
-        </main>
+      </main>
 
-        <AnimatePresence>
-          {isSettingsOpen && (
-            <SettingsModal 
-              settings={settings}
-              onSave={handleSaveSettings}
-              onClose={() => setIsSettingsOpen(false)}
-            />
-          )}
-        </AnimatePresence>
-      </div>
+      <AnimatePresence>
+        {isSettingsOpen && (
+          <SettingsModal 
+            settings={settings}
+            onSave={handleSaveSettings}
+            onClose={() => setIsSettingsOpen(false)}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }
